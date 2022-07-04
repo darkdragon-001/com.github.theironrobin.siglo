@@ -23,4 +23,5 @@ jobs:
       - uses: actions/checkout@v2
       - name: test git
         run: |
+          git config --global --add safe.directory /__w/com.github.theironrobin.siglo/com.github.theironrobin.siglo
           git status
