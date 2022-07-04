@@ -21,3 +21,6 @@ jobs:
           sudo dnf -y install jq python3-pip
           python3 -m pip install requirements-parser
       - uses: actions/checkout@v2
+      - name: test git
+        run: |
+          git status
