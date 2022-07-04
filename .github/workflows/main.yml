@@ -21,7 +21,26 @@ jobs:
           sudo dnf -y install jq python3-pip
           python3 -m pip install requirements-parser
       - uses: actions/checkout@v2
-      - name: test git
+      - name: Download flatpak-builder-tools
+        run: |
+          git clone -b ${BUILDER_TOOLS_BRANCH} \
+                       ${BUILDER_TOOLS_URL} \
+                       flatpak-builder-tools
+      - name: validate git repo
         run: |
           git config --global --add safe.directory /__w/com.github.theironrobin.siglo/com.github.theironrobin.siglo
-          git status
+      
+      - name: Update the Python dependencies
+        run: |
+          set -e
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config user.name "Workflow trigger"
+          git switch -c update-python-modules-$(git rev-parse --short HEAD)
+          python3 flatpak-builder-tools/pip/flatpak-pip-generator --runtime $(jq -r .sdk com.github.theironrobin.siglo.json)//$(jq -r '."runtime-version"' com.github.theironrobin.siglo.json) dbus-python gatt requests
+          git diff --staged --quiet
+          if test $? -ne 0
+          then
+            git add -- python3-modules.json
+            git commit -m "Update the Python dependencies"
+            git push https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}
+          fi
