@@ -35,6 +35,13 @@
                     "url" : "https://github.com/theironrobin/siglo",
                     "tag" : "v0.9.8",
                     "commit" : "4e712ef0d3f6c9d7117dd6d25763566d0a173a4c"
+                    "x-checker-data": {
+                        "type": "json",
+                        "url": "https://api.github.com/repos/theironrobin/siglo/releases/latest",
+                        "tag-query": ".tag_name",
+                        "version-query": ".tag_name | sub(\"^v\"; \"\")",
+                        "timestamp-query": ".published_at"
+                    }
                 }
             ]
         }
